@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Trendy 2025 - Interaktívny Dashboard</title>
+    <meta name="description" content="Interaktívny prehľad najdôležitejších trendov v oblasti umelej inteligencie pre rok 2025">
+    <meta property="og:title" content="AI Trendy 2025 - Interaktívny Dashboard">
+    <meta property="og:description" content="Kompletný prehľad AI trendov, investícií a predikci"í pre rok 2025">
+    <meta property="og:type" content="website">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #9d4edd, #4cc9f0, #7209b7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, #9d4edd, #4cc9f0);
+            color: white;
+            box-shadow: 0 8px 25px rgba(157, 78, 221, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab-button:not(.active) {
+            background: #374151;
+            color: #d1d5db;
+        }
+
+        .tab-button:not(.active):hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #4a5568;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #9d4edd, #4cc9f0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: #9d4edd;
+        }
+
+        .stat-card h3 {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #9d4edd, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .subtitle {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            color: #f7fafc;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 1rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .milestones {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #374151;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .milestone:hover {
+            background: #4b5563;
+            transform: translateX(10px);
+        }
+
+        .milestone-number {
+            background: linear-gradient(45deg, #4cc9f0, #9d4edd);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .milestone-content .year {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .milestone-content .description {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .prediction-card {
+            padding: 2rem;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .prediction-card.purple {
+            background: linear-gradient(135deg, #553c9a, #7c3aed);
+        }
+
+        .prediction-card.blue {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+
+        .prediction-card.green {
+            background: linear-gradient(135deg, #064e3b, #10b981);
+        }
+
+        .prediction-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .prediction-card ul {
+            list-style: none;
+        }
+
+        .prediction-card li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: #718096;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 200px;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>AI Trendy 2025</h1>
+            <p>Interaktívny prehľad najdôležitejších trendov v oblasti umelej inteligencie pre rok 2025</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="showTab('global')">🌍 Globálne trendy</button>
+            <button class="tab-button" onclick="showTab('slovakia')">🇸🇰 Slovensko</button>
+            <button class="tab-button" onclick="showTab('predictions')">🔮 Predikcie</button>
+        </div>
+
+        <!-- Global Trends Tab -->
+        <div id="global" class="tab-content active">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Najväčší trend</h3>
+                    <div class="value">Agentic AI</div>
+                    <div class="subtitle">95% popularita</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Investície 2025</h3>
+                    <div class="value">$125.7B</div>
+                    <div class="subtitle">+40% rast</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Adopcia firiem</h3>
+                    <div class="value">63%</div>
+                    <div class="subtitle">do 3 rokov</div>
+                </div>
+                <div class="stat-card">
+                    <h3>AI rozhodnutia</h3>
+                    <div class="value">15%</div>
+                    <div class="subtitle">do roku 2028</div>
+                </div>
+            </div>
+
+            <!-- AI Trends Chart -->
+            <div class="chart-container">
+                <h2>📈 Popularita AI trendov 2025</h2>
+                <div class="chart-wrapper">
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Investment Timeline -->
+            <div class="chart-container">
+                <h2>💰 Investície do AI (miliardy USD)</h2>
+                <div class="chart-wrapper">
+                    <canvas id="investmentChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Sector Adoption -->
+            <div class="grid-2">
+                <div class="chart-container">
+                    <h2>🏢 Adopcia AI v sektoroch</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="sectorChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h2>💾 Náklady na dáta (mil. USD)</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="costsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slovakia Tab -->
+        <div id="slovakia" class="tab-content">
+            <!-- Slovakia Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>AI platforma</h3>
+                    <div class="value">AIslovakIA</div>
+                    <div class="subtitle">od 2019</div>
+                </div>
+                <div class="stat-card">
+                    <h3>AI firmy</h3>
+                    <div class="value">24+</div>
+                    <div class="subtitle">aktívne spoločnosti</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Iniciatívy 2025</h3>
+                    <div class="value">24</div>
+                    <div class="subtitle">plánované projekty</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Ministerstvo</h3>
+                    <div class="value">MIRRI</div>
+                    <div class="subtitle">vedúca inštitúcia</div>
+                </div>
+            </div>
+
+            <!-- Slovakia Development Chart -->
+            <div class="chart-container">
+                <h2>🇸🇰 Vývoj AI na Slovensku</h2>
+                <div class="chart-wrapper">
+                    <canvas id="slovakiaChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Slovakia Milestones -->
+            <div class="chart-container">
+                <h2>🏗️ Kľúčové míľniky AI na Slovensku</h2>
+                <div class="milestones">
+                    <div class="milestone">
+                        <div class="milestone-number">1</div>
+                        <div class="milestone-content">
+                            <div class="year">2019</div>
+                            <div class="description">Založenie Slovak.AI</div>
+                        </div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-number">3</div>
+                        <div class="milestone-content">
+                            <div class="year">2020</div>
+                            <div class="description">MIRRI stratégia</div>
+                        </div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-number">5</div>
+                        <div class="milestone-content">
+                            <div class="year">2021</div>
+                            <div class="description">Etické výbory</div>
+                        </div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-number">8</div>
+                        <div class="milestone-content">
+                            <div class="year">2022</div>
+                            <div class="description">Vzdelávacie programy</div>
+                        </div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-number">12</div>
+                        <div class="milestone-content">
+                            <div class="year">2023</div>
+                            <div class="description">AIslovakIA platforma</div>
+                        </div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-number">18</div>
+                        <div class="milestone-content">
+                            <div class="year">2024</div>
+                            <div class="description">Podnikateľské iniciatívy</div>
+                        </div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-number">24</div>
+                        <div class="milestone-content">
+                            <div class="year">2025</div>
+                            <div class="description">Implementácia stratégie</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictions Tab -->
+        <div id="predictions" class="tab-content">
+            <!-- Predictions Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Nové pracovné miesta</h3>
+                    <div class="value">+97M</div>
+                    <div class="subtitle">do roku 2025</div>
+                </div>
+                <div class="stat-card">
+                    <h3>AI rozhodnutia</h3>
+                    <div class="value">15%</div>
+                    <div class="subtitle">autonómne do 2028</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Podnikové aplikácie</h3>
+                    <div class="value">33%</div>
+                    <div class="subtitle">s AI do 2028</div>
+                </div>
+            </div>
+
+            <!-- Job Impact Chart -->
+            <div class="chart-container">
+                <h2>👥 Dopad AI na pracovné miesta (milióny)</h2>
+                <div class="chart-wrapper">
+                    <canvas id="jobsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Predictions Cards -->
+            <div class="chart-container">
+                <h2>🎯 Kľúčové predikcie pre najbližšie roky</h2>
+                <div class="predictions-grid">
+                    <div class="prediction-card purple">
+                        <h3>2025</h3>
+                        <ul>
+                            <li>• Agentic AI dominuje trh</li>
+                            <li>• 20% IT rozpočtov na AI</li>
+                            <li>• +12M nových pracovných miest</li>
+                        </ul>
+                    </div>
+                    <div class="prediction-card blue">
+                        <h3>2026-2027</h3>
+                        <ul>
+                            <li>• 40% agentic projektov zrušených</li>
+                            <li>• Multimodal AI mainstream</li>
+                            <li>• AI agenti v 33% aplikácií</li>
+                        </ul>
+                    </div>
+                    <div class="prediction-card green">
+                        <h3>2028+</h3>
+                        <ul>
+                            <li>• 15% autonómnych rozhodnutí</li>
+                            <li>• AI supersystémy</li>
+                            <li>• Kognitívne podniky</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>📊 Dáta založené na výskume Stanford AI Index 2025, Gartner prognózy a ďalšie zdroje</p>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Chart configurations
+        const chartColors = {
+            primary: '#9d4edd',
+            secondary: '#4cc9f0',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444'
+        };
+
+        // AI Trends Chart
+        new Chart(document.getElementById('trendsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Agentic AI', 'Advanced Reasoning', 'Multimodal AI', 'Enterprise ROI', 'Small Models', 'AI Security', 'Synthetic Data', 'Public Sector'],
+                datasets: [{
+                    label: 'Popularita (%)',
+                    data: [95, 88, 85, 82, 78, 75, 72, 68],
+                    backgroundColor: chartColors.primary,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    },
+                    x: { 
+                        ticks: { color: '#a0a0a0', maxRotation: 45 },
+                        grid: { color: '#374151' }
+                    }
+                }
+            }
+        });
+
+        // Investment Timeline Chart
+        new Chart(document.getElementById('investmentChart'), {
+            type: 'line',
+            data: {
+                labels: ['2022', '2023', '2024', '2025', '2026'],
+                datasets: [
+                    {
+                        label: 'Celkové investície',
+                        data: [42.3, 67.8, 89.4, 125.7, 168.2],
+                        borderColor: chartColors.primary,
+                        backgroundColor: chartColors.primary + '20',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Agentic AI',
+                        data: [2.1, 5.8, 12.4, 28.3, 45.7],
+                        borderColor: chartColors.secondary,
+                        backgroundColor: chartColors.secondary + '20',
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        labels: { color: '#a0a0a0' }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    },
+                    x: { 
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    }
+                }
+            }
+        });
+
+        // Sector Adoption Chart
+        new Chart(document.getElementById('sectorChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Technológie', 'Finančníctvo', 'Zdravotníctvo', 'Maloobchod', 'Výroba', 'Vzdelávanie', 'Verejný sektor'],
+                datasets: [{
+                    data: [87, 73, 68, 65, 62, 45, 41],
+                    backgroundColor: [
+                        chartColors.primary,
+                        chartColors.secondary,
+                        chartColors.success,
+                        chartColors.warning,
+                        chartColors.danger,
+                        '#8b5cf6',
+                        '#06b6d4'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom',
+                        labels: { color: '#a0a0a0', padding: 20 }
+                    }
+                }
+            }
+        });
+
+        // Data Costs Chart
+        new Chart(document.getElementById('costsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Tradičné dáta', 'Syntetické dáta'],
+                datasets: [{
+                    label: 'Náklady (mil. USD)',
+                    data: [4.6, 0.7],
+                    backgroundColor: [chartColors.danger, chartColors.success],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true,
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    },
+                    y: { 
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    }
+                }
+            }
+        });
+
+        // Slovakia Development Chart
+        new Chart(document.getElementById('slovakiaChart'), {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+                datasets: [{
+                    label: 'Počet iniciatív',
+                    data: [1, 3, 5, 8, 12, 18, 24],
+                    borderColor: chartColors.secondary,
+                    backgroundColor: chartColors.secondary + '20',
+                    pointBackgroundColor: chartColors.secondary,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    },
+                    x: { 
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    }
+                }
+            }
+        });
+
+        // Jobs Impact Chart
+        new Chart(document.getElementById('jobsChart'), {
+            type: 'line',
+            data: {
+                labels: ['2024', '2025', '2026', '2027', '2028'],
+                datasets: [
+                    {
+                        label: 'Zrušené miesta',
+                        data: [0, 85, 120, 160, 200],
+                        borderColor: chartColors.danger,
+                        backgroundColor: chartColors.danger + '20',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Nové miesta',
+                        data: [0, 97, 145, 195, 250],
+                        borderColor: chartColors.success,
+                        backgroundColor: chartColors.success + '20',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Čistý prírastok',
+                        data: [0, 12, 25, 35, 50],
+                        borderColor: chartColors.secondary,
+                        backgroundColor: chartColors.secondary + '20',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        labels: { color: '#a0a0a0' }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    },
+                    x: { 
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: '#374151' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
